@@ -5,12 +5,12 @@ const company = (id = '03') => db.companies.get(id);
 const getJob = (id) => db.jobs.get(id);
 
 const Query = {
-  job: (root, { id }, context, info) => {
-    console.log(root, id, `context: ${context}`, `info: ${info}`);
-    return getJob(id);
+  job: (root, args, context, info) => {
+    console.log(root, args, `context: ${context}`, `info: ${info}`);
+    return getJob(args.id);
   },
   jobs: () => getJobs(),
-  company: () => company()
+  company: (root, {id}) => company(id)
 }
 
 const Job = {

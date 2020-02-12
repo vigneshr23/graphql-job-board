@@ -43,3 +43,22 @@ export async function loadJob(id) {
   const respBody = await response.json();
   return respBody.data;
 };
+
+export async function loadComapny(id) {
+  const response = await fetch(REQ_URI, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `query CompanyQuery($id: ID!) {
+        company(id: $id) {
+          name,
+          id,
+          description
+        }
+      }`,
+      variables: { id }
+    })
+  });
+  const respBody = await response.json();
+  return respBody.data;
+};
