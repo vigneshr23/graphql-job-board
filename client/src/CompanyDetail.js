@@ -4,18 +4,18 @@ import { loadComapny } from './requests';
 export class CompanyDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = {company: null};
+    this.state = { company: null };
   }
 
   async componentDidMount() {
-    const {companyId} = this.props.match.params;
-    const data = await loadComapny(companyId);
-    this.setState({company: data.company});
+    const { companyId } = this.props.match.params;
+    const company = await loadComapny(companyId);
+    this.setState({ company });
   }
 
   render() {
-    const {company} = this.state;
-    if(!company) {
+    const { company } = this.state;
+    if (!company) {
       return <span>Loading...</span>;
     }
     return (

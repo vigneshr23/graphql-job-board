@@ -1,11 +1,26 @@
 const REQ_URI = 'http://localhost:9000/graphql';
 
-export async function loadJobs() {
+async function graphqlRequest(query, variables = {}) {
   const response = await fetch(REQ_URI, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
-      query: `{
+      query,
+      variables
+    })
+  })
+  const responseBody = await response.json();
+  if (responseBody.errors) {
+    const message = responseBody.errors.map(({ message }) => message).join("\n");
+    throw new Error(message);
+  }
+  return responseBody.data;
+}
+
+export async function loadJobs() {
+  const query = `{
         jobs {
           id
           title
@@ -14,19 +29,13 @@ export async function loadJobs() {
               name
           }
         }
-      }`
-    })
-  });
-  const respBody = await response.json();
-  return respBody.data.jobs;
+      }`;
+  const { jobs } = await graphqlRequest(query);
+  return jobs;
 }
 
 export async function loadJob(id) {
-  const response = await fetch(REQ_URI, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `query JobQuery($id: ID!) {
+  const query = `query JobQuery($id: ID!) {
         job(id: $id) {
           id
           title
@@ -36,29 +45,19 @@ export async function loadJob(id) {
             name
           }
         }
-      }`,
-      variables: { id }
-    })
-  });
-  const respBody = await response.json();
-  return respBody.data;
+      }`
+  const { job } = await graphqlRequest(query, { id })
+  return job;
 };
 
 export async function loadComapny(id) {
-  const response = await fetch(REQ_URI, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `query CompanyQuery($id: ID!) {
+  const query = `query CompanyQuery($id: ID!) {
         company(id: $id) {
           name,
           id,
           description
         }
-      }`,
-      variables: { id }
-    })
-  });
-  const respBody = await response.json();
-  return respBody.data;
+      }`;
+  const { company } = await graphqlRequest(query, { id });
+  return company;
 };
