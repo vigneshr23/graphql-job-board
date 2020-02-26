@@ -13,7 +13,7 @@ export class JobDetail extends Component {
   async componentDidMount() {
     const { jobId } = this.props.match.params;
 
-    const { job } = await loadJob(jobId);
+    const job = await loadJob(jobId);
     this.setState({ job });
   }
 

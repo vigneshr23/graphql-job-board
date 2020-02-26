@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { loadComapny } from './requests';
+import { Link } from 'react-router-dom';
+import { JobList } from './JobList';
 
 export class CompanyDetail extends Component {
   constructor(props) {
@@ -22,6 +24,10 @@ export class CompanyDetail extends Component {
       <div>
         <h1 className="title">{company.name}</h1>
         <div className="box">{company.description}</div>
+        <div>
+          <h5 className="title">Jobs at {company.name}</h5>
+          <JobList jobs={company.jobs} />
+        </div>
       </div>
     );
   }
