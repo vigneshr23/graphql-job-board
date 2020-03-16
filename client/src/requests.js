@@ -1,4 +1,4 @@
-const REQ_URI = 'http://localhost:9000/graphql';
+const REQ_URI = "http://localhost:9000/graphql";
 
 async function graphqlRequest(query, variables = {}) {
   const response = await fetch(REQ_URI, {
@@ -10,10 +10,12 @@ async function graphqlRequest(query, variables = {}) {
       query,
       variables
     })
-  })
+  });
   const responseBody = await response.json();
   if (responseBody.errors) {
-    const message = responseBody.errors.map(({ message }) => message).join("\n");
+    const message = responseBody.errors
+      .map(({ message }) => message)
+      .join("\n");
     throw new Error(message);
   }
   return responseBody.data;
@@ -45,10 +47,10 @@ export async function loadJob(id) {
             name
           }
         }
-      }`
-  const { job } = await graphqlRequest(query, { id })
+      }`;
+  const { job } = await graphqlRequest(query, { id });
   return job;
-};
+}
 
 export async function loadComapny(id) {
   const query = `query CompanyQuery($id: ID!) {
@@ -64,4 +66,20 @@ export async function loadComapny(id) {
       }`;
   const { company } = await graphqlRequest(query, { id });
   return company;
-};
+}
+
+export async function createJob(input) {
+  const mutation  = `mutation CreateJob($input: CreateJobInput) {
+    job: createJob(input: $input) {
+      id
+      title
+      description
+      company {
+        id
+        name
+      }
+    }
+  }`;
+  const { job } = await graphqlRequest(mutation , { input });
+  return job;
+}
