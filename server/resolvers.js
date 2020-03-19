@@ -11,12 +11,14 @@ const Query = {
 };
 
 const Mutation = {
-  createJob: (root, { input }) => {
-    console.log(input);
+  createJob: (root, { input }, context) => {
+    if (!context.user) {
+      throw Error("Unauthorized");
+    }
     const id = db.jobs.create(input);
     return db.jobs.get(id);
   }
-}; 
+};
 
 const Company = {
   jobs: company => db.jobs.list().filter(job => job.companyId === company.id)

@@ -1,7 +1,14 @@
+import { getAccessToken, isLoggedIn } from "./auth";
+
 const REQ_URI = "http://localhost:9000/graphql";
 
+const getAuthToken = () => {
+  const token = localStorage.getItem("accessToken");
+  return token ? `Bearer ${token}` : null;
+};
+
 async function graphqlRequest(query, variables = {}) {
-  const response = await fetch(REQ_URI, {
+  const request = {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -10,7 +17,13 @@ async function graphqlRequest(query, variables = {}) {
       query,
       variables
     })
-  });
+  };
+
+  if (isLoggedIn()) {
+    request.headers["Authorization"] = `Bearer ${getAccessToken()}`;
+  }
+
+  const response = await fetch(REQ_URI, request);
   const responseBody = await response.json();
   if (responseBody.errors) {
     const message = responseBody.errors
@@ -69,7 +82,7 @@ export async function loadComapny(id) {
 }
 
 export async function createJob(input) {
-  const mutation  = `mutation CreateJob($input: CreateJobInput) {
+  const mutation = `mutation CreateJob($input: CreateJobInput) {
     job: createJob(input: $input) {
       id
       title
@@ -80,6 +93,6 @@ export async function createJob(input) {
       }
     }
   }`;
-  const { job } = await graphqlRequest(mutation , { input });
+  const { job } = await graphqlRequest(mutation, { input });
   return job;
 }
