@@ -14,9 +14,9 @@ export class JobForm extends Component {
 
   handleClick(event) {
     event.preventDefault();
-    const companyId = "SJV0-wdOM"; // hard-coded!
+    //const companyId = "SJV0-wdOM"; // server determines companyId based on userId
     const { title, description } = this.state;
-    const input = { companyId, title, description };
+    const input = { title, description };
     createJob(input).then(job => {
       this.props.history.push(`/jobs/${job.id}`);
     });
